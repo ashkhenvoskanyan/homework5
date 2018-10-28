@@ -1,0 +1,179 @@
+<canvas id="canvas"></canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+
+    canvas.width = 700;
+    canvas.height = 500;
+
+    const backImg = new Image(); // make link an object
+    backImg.src = "https://free-psd-templates.com/wp-content/uploads/2017/03/les-750x397.jpg";
+    const heroImg = new Image();
+    heroImg.src = "https://i.pinimg.com/originals/dd/48/0b/dd480b5f25f03faa9fc9251420de5240.png";
+	const zombieImg = new Image();
+    zombieImg.src = "https://s3.envato.com/files/96942485/zombie.png";
+
+    const rand = function(num) {
+  return Math.floor(Math.random() * num) + 1;
+}
+const createHero = {
+	x: 50,
+	y: 200,
+	width: 90,
+	height: 90,
+	xDelta : 0,
+	yDelta : 0,
+	image: heroImg,
+	draw: function (){
+		context.drawImage(this.image, this.x,this.y, this.width, this.height);
+	},
+
+	update : function() {
+             	this.x += this.xDelta
+             	this.y += this.yDelta
+
+
+             	if (this.x + this.width >= canvas.width){
+             	
+             		this.xDelta = this.xDelta * -1;
+
+             	};
+             	if (this.y + this.height >= canvas.height){
+             		this.yDelta = this.yDelta * -1;
+             		
+             	};
+             	if (this.x <= 0){
+             		this.xDelta = this.xDelta * -1;
+             		
+             	};
+             	if (this.y <= 0){
+             		this.yDelta = this.yDelta * -1;
+             		
+             	};
+
+
+             	
+             }
+         
+	};
+
+
+
+
+	const createZombies = function (count, canvasWidth, canvasHeight){
+		const arr = [];
+	
+		for(i = 0; i < count; i++ ){
+		arr[arr.length]={ 
+	        x: rand(canvasWidth - 50 ),
+            y: rand(canvasHeight -50),
+            width: 50,
+            height: 50,
+            xDelta: 3, 
+            yDelta: 3, 
+           
+             draw: function() {
+             	context.drawImage(zombieImg, this.x,this.y,this.width,this.height)
+             },
+             update: function() {
+             	
+             	if(this.x < createHero.x + createHero.width && this.x + this.width > createHero.x && this.y < createHero.y + createHero.height && this.height + this.y > createHero.y ){alert("Game over");}
+
+                this.x += this.xDelta
+             	this.y += this.yDelta
+             	if (this.x + this.width >= canvas.width){
+             	
+             		this.xDelta = this.xDelta * -1;
+
+             	};
+             	if (this.y + this.height >= canvas.height){
+             		this.yDelta = this.yDelta * -1;
+             		
+             	};
+             	if (this.x <= 0){
+             		this.xDelta = this.xDelta * -1;
+             		
+             	};
+             	if (this.y <= 0){
+             		this.yDelta = this.yDelta * -1;
+             		
+             	};
+
+
+             	
+             }
+         }
+	}
+
+	return arr ;
+};
+
+     
+    const leftKey = 37;
+    const upKey = 38;
+    const rightKey = 39;
+    const downKey = 40;
+    document.addEventListener('keydown', function(event){
+        	if(event.keyCode === rightKey){
+        		createHero.xDelta = 5;
+        	}
+            }, false);
+    document.addEventListener('keyup', function(event){
+        	createHero.xDelta = 0;
+            }, false);
+    document.addEventListener('keydown', function(event){
+        	if(event.keyCode === leftKey){
+        		createHero.xDelta = - 5;
+        	}
+            }, false);
+    document.addEventListener('keyup', function(event){
+        	createHero.xDelta = 0;
+            }, false);
+    document.addEventListener('keydown', function(event){
+        	if(event.keyCode === downKey){
+        		createHero.yDelta = 5;
+        	}
+            }, false);
+    document.addEventListener('keyup', function(event){
+        	createHero.yDelta = 0;
+            }, false);
+    document.addEventListener('keydown', function(event){
+        	if(event.keyCode === upKey){
+        		createHero.yDelta = - 5;
+        	}
+        	if(createHero.x + createHero.width === canvas.width){
+        		createHero.xDelta = 0;
+        	}
+            }, false);
+    document.addEventListener('keyup', function(event){
+        	createHero.yDelta = 0;
+            }, false);
+
+const drawAll = function (arr){
+ 	
+ 	for(let i = 0; i < arr.length; i++) {
+ 		createZombies(arr[i].draw())
+ 	}
+
+ 	
+
+ };
+ const updateAll = function (arr){
+ 	for(let i = 0; i < arr.length; i++) {
+ 		createZombies(arr[i].update())
+ 	}
+
+ };
+const zombies = createZombies(5,canvas.width,canvas.height);
+
+
+	const loop = function (){
+		 context.drawImage(backImg, 0,0, canvas.width, canvas.height)
+		drawAll(zombies);
+		updateAll(zombies,);
+		createHero.draw();
+		createHero.update();
+		requestAnimationFrame(loop);
+	};
+	loop();
+	</script>

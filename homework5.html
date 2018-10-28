@@ -1,0 +1,89 @@
+<canvas id="canvas"></canvas>
+<script>
+
+const canvas = document.getElementById("canvas");
+const context = canvas.getContext("2d");
+canvas.width = 400
+canvas.height = 300
+
+const rand = function(num) {
+  return Math.floor(Math.random() * num) + 1;
+}
+const creatBoxes = function (count, canvasWidth, canvasHeight){
+	const arr = [];
+	const colorArray = ["red","orange","green","yellow","blue"]
+	for(i = 0; i < count; i++ ){
+		arr[arr.length]={ 
+	      x: rand(canvasWidth - 10 ),
+            y: rand(canvasHeight -10),
+            width: 10,
+            height: 10,
+            xDelta: 1, 
+            yDelta: 1, 
+            color: colorArray[rand(colorArray.length-1)], 
+             draw: function() {
+             	context.fillStyle = this.color;
+             	context.fillRect (this.x, this.y, this.width, this.height);
+
+             },
+             update: function() {
+             	this.x += this.xDelta
+             	this.y += this.yDelta
+             	if (this.x + this.width >= canvas.width){
+             	
+             		this.xDelta = this.xDelta * -1;
+
+             	};
+             	if (this.y + this.height >= canvas.height){
+             		this.yDelta = this.yDelta * -1;
+             		
+             	};
+             	if (this.x <= 0){
+             		this.xDelta = this.xDelta * -1;
+             		
+             	};
+             	if (this.y <= 0){
+             		this.yDelta = this.yDelta * -1;
+             		
+             	};
+
+
+             	this.x = this.x + this.xDelta
+             }
+         }
+	}
+
+	return arr ;
+};
+
+
+ 
+ const drawAll = function (arr){
+ 	context.fillStyle = 'violet';
+    context.fillRect (0,0,canvas.width,canvas.height);
+ 	for(let i = 0; i < arr.length; i++) {
+ 		creatBoxes(arr[i].draw())
+ 	}
+ };
+ const updateAll = function (arr){
+ 	for(let i = 0; i < arr.length; i++) {
+ 		creatBoxes(arr[i].update())
+ 	}
+
+ };
+const boxes = creatBoxes(10,canvas.width,canvas.height); 
+
+
+	const loop = function (){
+           
+		drawAll(boxes);
+		updateAll(boxes);
+		requestAnimationFrame(loop);
+	};
+	loop();
+	</script>
+
+
+
+
+
